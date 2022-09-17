@@ -4,8 +4,8 @@ Applications Created by reverse enginnering the Panasonics Cameras
 This Repository Contains some Applications created by Reverse enginnering Panasonic Cameras
 
 ## The Utilities
-For a Live Feed of your Camera use `PanLivePlayerControl`
-For an v4l2 feed of your Camera use Panasonic_to_v4l2`
+For a Live Feed of your Camera use `PanLivePlayerControl`.
+For an v4l2 feed of your Camera use Panasonic_to_v4l2`.
 
 ## Tested Platforms
 Currently only Linux is supported.
