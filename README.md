@@ -1,4 +1,4 @@
-# Panasonic Camera Reverse
+# Panasonic Camera Reverse (Use your Panasonic Camera on Linux)
 Applications Created by reverse enginnering the Panasonics Cameras
 
 This Repository Contains some Applications created by Reverse enginnering Panasonic Cameras
