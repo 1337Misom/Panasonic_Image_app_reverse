@@ -9,6 +9,8 @@
 #define HEADER_OFFSET 56
 #define WIDTH 640
 #define HEIGHT 360
+#define APPROXIMATE_START 30
+#define JPEG_HEADER_LENGTH 2
 #define ButtonWidth 48
 #define ButtonHeight 32
 #define WIDTHControl ButtonWidth*5
@@ -27,6 +29,8 @@ const char sustainstreampatt[] = "http://%s/cam.cgi?mode=getstate";
 const char setrecmodepatt[] = "http://%s/cam.cgi?mode=camcmd&value=recmode";
 
 const char windowicon[] = "icons/logo.png";
+
+const uint8_t jpeg_header[JPEG_HEADER_LENGTH] = {0xff,0xd8};
 
 char *camera;
 

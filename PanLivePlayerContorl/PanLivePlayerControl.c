@@ -43,7 +43,7 @@ usage (char *progname)
 
 
 int
-startdisplay (CURL * curl,char * sustainstream,char * getinfo,char * startstream,pthread_t thread_id)
+startdisplay (CURL * curl,char * sustainstream,char * getinfo,char * startstream)
 {
         tjhandle jpegdec = tjInitDecompress ();
 
@@ -73,7 +73,7 @@ startdisplay (CURL * curl,char * sustainstream,char * getinfo,char * startstream
         unsigned short length;
 
         unsigned char *audio_buf;
-        unsigned char *video_buf;
+        unsigned char *jpeg_image;
 
         unsigned char rgbbuf[WIDTH * HEIGHT * 3];
         unsigned char buf[MAXBUFLEN];
@@ -182,7 +182,7 @@ startdisplay (CURL * curl,char * sustainstream,char * getinfo,char * startstream
                 perror ("Bind");
                 exit (1);
         }
-        //puts("");
+
         bool firstrun = true;
         while (!quit)
         {
@@ -223,9 +223,11 @@ startdisplay (CURL * curl,char * sustainstream,char * getinfo,char * startstream
                 }
                 else if (packet_id == JPEG_ID)
                 {
-                        video_buf = buf + HEADER_OFFSET;
+                        // Scan for 0xffd8 (Jpeg start)
+                        jpeg_image = (uint8_t*) memmem(buf+APPROXIMATE_START, length,jpeg_header, JPEG_HEADER_LENGTH);
+
                         if (tjDecompress2
-                                    (jpegdec, video_buf, returnbytes - HEADER_OFFSET, rgbbuf,
+                                    (jpegdec, jpeg_image, returnbytes - HEADER_OFFSET, rgbbuf,
                                     WIDTH, WIDTH * 3, HEIGHT, TJPF_RGB, TJFLAG_FASTDCT) == -1)
                         {
                                 printf
@@ -251,17 +253,19 @@ startdisplay (CURL * curl,char * sustainstream,char * getinfo,char * startstream
                 switch (event.type)
                 {
                 case SDL_QUIT:
+                        puts("Exiting");
                         quit = true;
                         break;
                 }
                 counter++;
         }
         puts("Stopping Main Window");
+        close (UDPSocket);
         SDL_DestroyTexture (texture);
         SDL_DestroyRenderer (renderer);
         SDL_DestroyWindow (win);
+        SDL_Quit();
         tjDestroy (jpegdec);
-        close (UDPSocket);
         return 0;
 }
 int
@@ -292,8 +296,6 @@ main (int argc, char *argv[])
 
         }
 
-        startdisplay(curl,sustainstream,getinfo,startstream,thread_id);
-        pthread_kill (thread_id, SIGKILL);
-        SDL_Quit();
+        startdisplay(curl,sustainstream,getinfo,startstream);
         return 0;
 }
